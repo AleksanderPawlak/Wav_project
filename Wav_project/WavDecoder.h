@@ -40,7 +40,8 @@ class WavDecoder
 	
 public:
 
-	void ReadFile(std::string);
+	void readFile(std::string);
+	void writeToFile(std::string);
 
 	std::vector<int> getMonoData();
 	std::vector<WavStereoSample> getStereoData();
@@ -49,6 +50,8 @@ public:
 	int getNumberOfSamples();
 
 	Wav_Header getWavHeader();
+
+	void setMonoData(std::vector<int> inputData);
 
 	WavDecoder() {};
 	~WavDecoder() {};

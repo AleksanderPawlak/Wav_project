@@ -7,17 +7,16 @@
 #include <cstdio>
 #include <stdio.h>
 
-void WavDecoder::ReadFile(std::string filename1)
+void WavDecoder::readFile(std::string filename1)
 {
 	const char* filename = filename1.c_str();
 	FILE* file;
-	errno_t dupa = fopen_s(&file, filename, "rb");
+	errno_t openError = fopen_s(&file, filename, "rb");
 
 
-	if (file == NULL)
+	if (file == NULL || openError)
 	{
-		std::cerr << "Problem with opening " << filename << std::endl;
-		return;
+		throw std::exception("Problem with file");
 	}
 
 	std::fread((&fileHeader), sizeof(fileHeader), 1, file);
@@ -67,6 +66,29 @@ void WavDecoder::ReadFile(std::string filename1)
 	std::fclose(file);
 }
 
+void WavDecoder::writeToFile(std::string inputFilename)
+{
+	const char* filename = inputFilename.c_str();
+	FILE* file;
+	errno_t openError = fopen_s(&file, filename, "wb");
+
+
+	if (file == NULL || openError)
+	{
+		throw std::exception("Problem with file");
+	}
+
+	std::fwrite((&fileHeader), sizeof(Wav_Header), 1, file);
+	std::fwrite((&dataArgs), sizeof(Wav_Data), 1, file);
+
+	for (int i{}; i < samplesNumber; i++)
+	{
+		std::fwrite((&audioMonoData[i]), sizeof(audioMonoData), 1, file);
+	}
+
+	fclose(file);
+}
+
 std::vector<int> WavDecoder::getMonoData()
 {
 	if (fileHeader.numChannels != 1)
@@ -109,4 +131,17 @@ int WavDecoder::getNumberOfSamples()
 Wav_Header WavDecoder::getWavHeader()
 {
 	return this->fileHeader;
+}
+
+void WavDecoder::setMonoData(std::vector<int> inputData)
+{
+	if (inputData.size() != samplesNumber)
+	{
+		throw std::invalid_argument("Wrong vector size.");
+	}
+
+	for (int i{}; i < inputData.size(); i++)
+	{
+		audioMonoData[i] = inputData[i];
+	}
 }

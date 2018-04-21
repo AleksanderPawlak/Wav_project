@@ -16,7 +16,7 @@ using boost::any_cast;
 
 int main()
 {
-	/*std::string filename = "samplemono.wav";
+	std::string filename = "samplemono.wav";
 	WavDecoder decoder;
 	std::vector<double> data;
 
@@ -24,7 +24,7 @@ int main()
 
 	//std::cin >> filename;
 
-	decoder.ReadFile(filename);
+	decoder.readFile(filename);
 
 	if (decoder.getChannelsNumber() == 1)
 	{
@@ -72,7 +72,7 @@ int main()
 	}
 	std::cout << std::endl;
 
-	fft(complexData);
+	//fft(complexData);
 
 	std::cout << "fft: \n";
 	for (std::vector<std::complex<double>>::iterator it = complexData.begin(); it != complexData.begin() + 10; ++it)
@@ -81,7 +81,7 @@ int main()
 	}
 	std::cout << std::endl;
 
-	reverseFft(complexData);
+	//reverseFft(complexData);
 	std::cout << "\n\nnieczysty: \n";
 	for (std::vector<std::complex<double>>::iterator it = complexData.begin(); it != complexData.begin() + 10; ++it)
 	{
@@ -90,7 +90,7 @@ int main()
 	std::cout << std::endl;
 
 
-	std::thread display(DisplayComplexVector, complexData, filename, -1);
+	//std::thread display(DisplayComplexVector, complexData, filename, -1);
 
 	auto properties = decoder.getWavHeader();
 
@@ -99,17 +99,19 @@ int main()
 	std::cout << "Liczba kanalow: " << decoder.getChannelsNumber() << std::endl;
 	std::cout << "Liczba bitow na probke: " << properties.bitsPerSample << std::endl << std::endl;
 
-	if (display.joinable())
-	{
-		display.join();
-	}*/
-	
+	//if (display.joinable())
+	//{
+		//display.join();
+	//}
+
+	decoder.writeToFile("dupa.wav");
+	/*
 	std::vector<std::complex<double>> dupa{-777.0, 2.0, 3.0, 4.0};
 
 	fft(dupa);
-	reverseFft(dupa);
+	//reverseFft(dupa);
 	for (auto i : dupa)
-		std::cout << i;
+		std::cout << i;*/
 
 	std::system("pause");
 	return 0;
