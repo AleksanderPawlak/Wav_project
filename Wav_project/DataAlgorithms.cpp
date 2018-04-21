@@ -6,14 +6,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-
+#include <complex>
 #include <SFML\Graphics.hpp>
 
 #define PI std::atan(1.0)*4
 
-void fft(ComplexVec& array)
+void fft(ComplexVec& inputVector)
 {
-	const int size = array.size();
+	const int size = inputVector.size();
 
 	if (size <= 1)
 	{
@@ -23,7 +23,7 @@ void fft(ComplexVec& array)
 	ComplexVec even, odd;
 	bool isEven = false;
 
-	std::partition_copy(array.begin(), array.end(), std::back_inserter(even), std::back_inserter(odd),
+	std::partition_copy(inputVector.begin(), inputVector.end(), std::back_inserter(even), std::back_inserter(odd),
 		[&isEven](std::complex<double>) {return isEven = !isEven; });
 
 	fft(odd);
@@ -33,9 +33,23 @@ void fft(ComplexVec& array)
 	{
 		std::complex<double> e = std::polar(1.0, ((-2.0 * PI) / size)* i) * odd[i];
 
-		array[i] = even[i] + e;
-		array[i + size / 2] = even[i] - e;
+		inputVector[i] = even[i] + e;
+		inputVector[i + size / 2] = even[i] - e;
 	}
+}
+
+void reverseFft(ComplexVec& inputVec)
+{
+	for (auto& value : inputVec)
+		value = std::conj(value);
+
+	fft(inputVec);
+
+	for (auto& value : inputVec)
+		value = std::conj(value);
+
+	for (auto& value : inputVec)
+		value = value / std::complex<double>(inputVec.size());
 }
 
 ComplexVec doubleToComplexVector(std::vector<double> inputV)
@@ -66,7 +80,7 @@ void handleWindow(sf::RenderWindow& window)
 	}
 }
 
-void DisplayWavFFT(ComplexVec inputVec, std::string filename, int size)
+void DisplayComplexVector(ComplexVec inputVec, std::string filename, int size)
 {
 	std::string windowName = "fft for " + filename;
 

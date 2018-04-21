@@ -32,17 +32,22 @@ class WavDecoder
 {
 	Wav_Header fileHeader;
 	Wav_Data dataArgs;
-	std::vector<WavStereoSample> audioData;
-	std::vector<int> audioMonoData;
 
+	std::vector<WavStereoSample> audioData;
+	__int16* audioMonoData;
+
+	unsigned int samplesNumber;
+	
 public:
 
 	void ReadFile(std::string);
 
 	std::vector<int> getMonoData();
 	std::vector<WavStereoSample> getStereoData();
+
 	int getChannelsNumber();
 	int getNumberOfSamples();
+
 	Wav_Header getWavHeader();
 
 	WavDecoder() {};

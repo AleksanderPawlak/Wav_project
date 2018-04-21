@@ -30,6 +30,9 @@
     <ClInclude Include="DataAlgorithms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EncryptionAlgorithms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -44,5 +47,11 @@
     <ClCompile Include="DataAlgorithms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EncryptionAlgorithms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

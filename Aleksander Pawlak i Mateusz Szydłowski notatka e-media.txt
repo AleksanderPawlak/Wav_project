@@ -1,0 +1,31 @@
+Notatka z postêpu prac nad projektem z przedmiotu e-media.
+
+data wykonania: 09.04.2018
+
+grupa zajêciowa: wtorek 9:15
+
+autorzy:
+	Aleksander Pawlak 226318
+	Mateusz Szyd³owski 226408
+
+Wykonywany projekt jest programem zaimplementowanym w jêzyku C++ do dekodowania pliku wav, 
+bêd¹cego plikiem bitowym i dokonuj¹cym odpowiedniej obróbki wczytanych danych.
+
+Program wczytuje w pierwszej kolejnoœci nag³ówek pliku wav na podstawie dokumentacji formatu wav. 
+Dane na ten temat zaczerpniête zosta³y ze strony http://soundfile.sapp.org/doc/WaveFormat/. 
+Po wczytaniu nag³ówka dane z próbkami wczytywane s¹ do wektora, lub jeœli plik jest w wersji stereo, do dwóch wektorów.
+
+Program poza odczytaniem pliku wylicza dyskretn¹ Transformatê Fouriera za pomoc¹ algorytmu fft Cooleya-Tukeya. 
+Algorytm zosta³ sprowadzony do rekurencyjnej funkcji upraszczaj¹cej implementacjê algorytmu. Dane zwracane s¹ w postaci wektora liczb zespolonych.
+
+Po wyliczeniu transformaty Fouriera dla danych, wartoœci z wektora wynikowego wyœwietlane s¹ na ekranie przy u¿yciu biblioteki SFML.
+Biblioteka ta umo¿liwia tworzenie z³o¿onych grafik, zosta³a jednak u¿yta ze wzglêdu na du¿e mo¿liwoœci rozbudowy programu, jeœli chodzi o dodatkowy interfejs.
+Na póŸniejszym etapie mo¿e ona umo¿liwiæ odtwarzanie plików dŸwiêkowych przed i po obróbce wewn¹trz programu w ³atwy sposób.
+
+Zrealizowany zosta³ równie¿ algorytm odwrotnej fft oparty na wczeœniejszym algorytmie, w celu sprawdzenia poprawnoœci wykonania samego algorytmu fft.
+Dane po na³o¿eniu po sobie algorytmów zgadza³y siê z tymi wejœciowymi.
+
+Kolejnym algorytmem zrealizowanym do tej pory by³ algorytm szyfrowania danych oparty na algorytmie XOR, który oprócz danych do szyfrowania wymaga wczytania klucza do szyfrowania.
+XOR zwraca na wyjœciu 1, wtedy, gdy jedno i tylko jedna ze zmiennych jest prawdziwa.
+algorytm wykorzystuje alternatywê binarn¹ oznaczan¹ jako '^'. 
+Ten sam klucz potrzebny jest do deszyfrowania danych.

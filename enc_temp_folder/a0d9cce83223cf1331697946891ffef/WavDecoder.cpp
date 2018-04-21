@@ -37,12 +37,6 @@ void WavDecoder::ReadFile(std::string filename1)
 
 	unsigned int sampleSize = fileHeader.bitsPerSample;
 
-	if (sampleSize != 16)
-	{
-		fclose(file);
-		throw std::invalid_argument("Not supported size of samples.");
-	}
-
 	this->samplesNumber = dataArgs.subchunk2Size * 8 / fileHeader.bitsPerSample;
 
 	if (fileHeader.numChannels == 2) {
@@ -60,8 +54,7 @@ void WavDecoder::ReadFile(std::string filename1)
 	}
 	else
 	{
-		fclose(file);
-		throw std::invalid_argument("Not supported channels number.");
+		std::cerr << "Not supported channels number" << std::endl;
 	}
 
 	std::fclose(file);
@@ -103,6 +96,7 @@ int WavDecoder::getChannelsNumber()
 
 int WavDecoder::getNumberOfSamples()
 {
+	//return this->dataArgs.subchunk2Size;
 	return samplesNumber;
 }
 
