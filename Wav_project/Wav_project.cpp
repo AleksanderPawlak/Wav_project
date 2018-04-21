@@ -9,14 +9,11 @@
 
 #include "DataAlgorithms.h"
 #include "WavDecoder.h"
-
-#include <boost\any.hpp>
-
-using boost::any_cast;
+#include "EncryptionAlgorithms.h"
 
 int main()
 {
-	std::string filename = "samplemono.wav";
+	/*std::string filename = "samplemono.wav";
 	WavDecoder decoder;
 	std::vector<double> data;
 
@@ -104,7 +101,7 @@ int main()
 		//display.join();
 	//}
 
-	decoder.writeToFile("dupa.wav");
+	decoder.writeToFile("dupa.wav");*/
 	/*
 	std::vector<std::complex<double>> dupa{-777.0, 2.0, 3.0, 4.0};
 
@@ -112,6 +109,10 @@ int main()
 	//reverseFft(dupa);
 	for (auto i : dupa)
 		std::cout << i;*/
+
+	EncryptionAlgorithms d;
+	auto p = d.generateKeys(13, 11);
+	std::cout << p.publicKey << "   " << p.privateKey << " " << p.modulKey << std::endl;
 
 	std::system("pause");
 	return 0;
