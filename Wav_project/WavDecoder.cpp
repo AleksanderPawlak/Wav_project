@@ -53,9 +53,9 @@ void WavDecoder::readFile(std::string filename1)
 		}
 	}
 	else if (fileHeader.numChannels == 1) {
-		this->audioMonoData = new __int16[samplesNumber];
+		this->audioMonoData = new short int[samplesNumber];
 
-		std::fread(this->audioMonoData, sizeof(__int16), samplesNumber, file);
+		std::fread(this->audioMonoData, sizeof(short int), samplesNumber, file);
 	}
 	else
 	{
@@ -89,20 +89,20 @@ void WavDecoder::writeToFile(std::string inputFilename)
 	fclose(file);
 }
 
-std::vector<int> WavDecoder::getMonoData()
+std::vector<short int> WavDecoder::getMonoData()
 {
 	if (fileHeader.numChannels != 1)
 	{
 		std::cerr << "File doesn't contain mono samples" << std::endl;
-		return std::vector<int>();
+		return std::vector<short int>();
 	}
 
-	std::vector<int> result;
+	std::vector<short int> result;
 	result.reserve(samplesNumber);
 
 	for (int i{}; i < samplesNumber; i++)
 	{
-		result.push_back(int(audioMonoData[i]));
+		result.push_back(audioMonoData[i]);
 	}
 
 	return result;
@@ -133,7 +133,7 @@ Wav_Header WavDecoder::getWavHeader()
 	return this->fileHeader;
 }
 
-void WavDecoder::setMonoData(std::vector<int> inputData)
+void WavDecoder::setMonoData(std::vector<short int> inputData)
 {
 	if (inputData.size() != samplesNumber)
 	{

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
-
+#include <bitset>
+#include <iostream>
 struct RsaKeys
 {
 	int privateKey;
@@ -8,21 +9,18 @@ struct RsaKeys
 	int modulKey;
 };
 
-class EncryptionAlgorithms
+namespace EncryptionAlgorithms
 {
-private:
+
 	bool isPrime(int);
 	int nwd(int, int);
 	int inverseModulo(int, int);
-
-public:
-	std::vector<int> xor (const std::vector<int>& inputVector, const std::vector<int> keyVector);
+	int powMod(int value, int pow, int m);
 
 	RsaKeys generateKeys(int, int);
-	//static std::vector<int> encryptRsa (const std::vector<int>& inputVector, const int& p, const int& q);
-	//static std::vector<int> decryptRsa(const std::vector<int>& inputVector);
 
-	EncryptionAlgorithms();
-	~EncryptionAlgorithms();
+	std::vector<int> xor (const std::vector<int>& inputVector, const std::vector<int> keyVector);
+
+	std::vector<short int> Rsa8 (const std::vector<short int>& inputData, const int & e, const int & n);
 };
 

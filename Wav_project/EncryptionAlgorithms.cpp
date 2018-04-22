@@ -34,6 +34,20 @@ int EncryptionAlgorithms::inverseModulo(int a, int b)
 			return i;
 }
 
+int EncryptionAlgorithms::powMod(int value, int pow, int m)
+{
+	int pot, result, q;
+
+	pot = value; result = 1; 
+
+	for (q = pow; q > 0; q /= 2)
+	{
+		if (q % 2) result = (result * pot) % m;
+		pot = (pot * pot) % m;
+	}
+	return result;
+}
+
 RsaKeys EncryptionAlgorithms::generateKeys(int p, int q)
 {	
 	RsaKeys result;
@@ -55,14 +69,6 @@ RsaKeys EncryptionAlgorithms::generateKeys(int p, int q)
 	return result;
 }
 
-EncryptionAlgorithms::EncryptionAlgorithms()
-{
-}
-
-EncryptionAlgorithms::~EncryptionAlgorithms()
-{
-}
-
 std::vector<int> EncryptionAlgorithms:: xor (const std::vector<int>& inputVector, const std::vector<int> keyVector)
 {
 	std::vector<int> encryptedData;
@@ -82,4 +88,24 @@ std::vector<int> EncryptionAlgorithms:: xor (const std::vector<int>& inputVector
 	}
 
 	return encryptedData;
+}
+
+std::vector<short int> EncryptionAlgorithms::Rsa8(const std::vector<short int>& inputData, const int & e, const int & n)
+{
+	std::vector<short int> encryptionResult;
+	encryptionResult.reserve(inputData.size());
+
+	for (auto value : inputData)
+	{
+		uint8_t valueBits[] = {value, value >> 8};
+		short int encryptedValue;
+
+		valueBits[0] = (uint8_t)powMod(valueBits[0], e, n);
+		valueBits[1] = (uint8_t)powMod(valueBits[1], e, n);
+
+		std::memcpy(&encryptedValue, &valueBits, sizeof(short int));
+		encryptionResult.push_back(encryptedValue);
+	}
+
+	return std::move(encryptionResult);
 }

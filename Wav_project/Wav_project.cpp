@@ -11,6 +11,8 @@
 #include "WavDecoder.h"
 #include "EncryptionAlgorithms.h"
 
+#include <bitset>
+
 int main()
 {
 	/*std::string filename = "samplemono.wav";
@@ -109,10 +111,38 @@ int main()
 	//reverseFft(dupa);
 	for (auto i : dupa)
 		std::cout << i;*/
+	/*short int l = 32761;
 
-	EncryptionAlgorithms d;
-	auto p = d.generateKeys(13, 11);
-	std::cout << p.publicKey << "   " << p.privateKey << " " << p.modulKey << std::endl;
+	std::bitset<16> b(l);
+
+	b[1] = 1;
+	b[2] = 1;
+	//uint8_t b[] = {l, l >> 8 };
+	//b[0] = 1;
+	//std::memcpy(&b, &l, sizeof(short int));
+	short int o;
+	//b[0] = (uint8_t)(l & 0xff);
+	//b[1] = (uint8_t)((l >> 8) & 0xff);
+	std::memcpy(&o, &b, sizeof(short int));
+	std::cout << o;*/
+
+	std::vector<short int> dupa;
+	//uint8_t b[] = { 123, 1 };
+	short int o = -2137;
+	//std::memcpy(&o, &b, sizeof(short int));
+
+	dupa.push_back(o);
+
+	auto keys = EncryptionAlgorithms::generateKeys(13, 11);
+
+	//std::cout << keys.publicKey << " " << keys.privateKey << " " << keys.modulKey << std::endl;
+
+	auto enc = EncryptionAlgorithms::Rsa8(dupa, keys.publicKey, keys.modulKey);
+
+	auto dec = EncryptionAlgorithms::Rsa8(enc, keys.privateKey, keys.modulKey);
+
+	for (auto val : dec)
+		std::cout << val << "  ";
 
 	std::system("pause");
 	return 0;
