@@ -7,6 +7,12 @@
 #include <cstdio>
 #include <stdio.h>
 
+std::vector<char> WavDecoder::splitMonoToStereo(std::vector<short int> inputData)
+{
+	std::vector<char> result(inputData.size() * 2);
+	return result;
+}
+
 void WavDecoder::readFile(std::string filename1)
 {
 	const char* filename = filename1.c_str();
@@ -44,18 +50,11 @@ void WavDecoder::readFile(std::string filename1)
 
 	this->samplesNumber = dataArgs.subchunk2Size * 8 / fileHeader.bitsPerSample;
 
-	if (fileHeader.numChannels == 2) {
-		this->audioData.resize(samplesNumber);
+	if (fileHeader.numChannels == 1 || fileHeader.numChannels == 2) {
 
-		for (int i{}; i < samplesNumber; i++)
-		{
-			std::fread(&audioData[i], sampleSize, 1, file);
-		}
-	}
-	else if (fileHeader.numChannels == 1) {
-		this->audioMonoData = new short int[samplesNumber];
+		this->audioData = new short int[samplesNumber];
 
-		std::fread(this->audioMonoData, sizeof(short int), samplesNumber, file);
+		std::fread(this->audioData, sizeof(short int), samplesNumber, file);
 	}
 	else
 	{
@@ -83,39 +82,23 @@ void WavDecoder::writeToFile(std::string inputFilename)
 
 	for (int i{}; i < samplesNumber; i++)
 	{
-		std::fwrite((&audioMonoData[i]), sizeof(audioMonoData), 1, file);
+		std::fwrite((&audioData[i]), sizeof(audioData), 1, file);
 	}
 
 	fclose(file);
 }
 
-std::vector<short int> WavDecoder::getMonoData()
+std::vector<short int> WavDecoder::getAudioData()
 {
-	if (fileHeader.numChannels != 1)
-	{
-		std::cerr << "File doesn't contain mono samples" << std::endl;
-		return std::vector<short int>();
-	}
-
 	std::vector<short int> result;
 	result.reserve(samplesNumber);
 
 	for (int i{}; i < samplesNumber; i++)
 	{
-		result.push_back(audioMonoData[i]);
+		result.push_back(audioData[i]);
 	}
 
 	return result;
-}
-
-std::vector<WavStereoSample> WavDecoder::getStereoData()
-{
-	if (fileHeader.numChannels != 2)
-	{
-		std::cerr << "File doesn't contain stereo samples" << std::endl;
-		return std::vector<WavStereoSample>();
-	}
-	return this->audioData;
 }
 
 int WavDecoder::getChannelsNumber()
@@ -133,7 +116,7 @@ Wav_Header WavDecoder::getWavHeader()
 	return this->fileHeader;
 }
 
-void WavDecoder::setMonoData(std::vector<short int> inputData)
+void WavDecoder::setData(std::vector<short int> inputData)
 {
 	if (inputData.size() != samplesNumber)
 	{
@@ -142,6 +125,6 @@ void WavDecoder::setMonoData(std::vector<short int> inputData)
 
 	for (int i{}; i < inputData.size(); i++)
 	{
-		audioMonoData[i] = inputData[i];
+		audioData[i] = inputData[i];
 	}
 }

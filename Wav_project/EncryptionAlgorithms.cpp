@@ -90,20 +90,42 @@ std::vector<int> EncryptionAlgorithms:: xor (const std::vector<int>& inputVector
 	return encryptedData;
 }
 
-std::vector<short int> EncryptionAlgorithms::Rsa8(const std::vector<short int>& inputData, const int & e, const int & n)
+std::vector<int> EncryptionAlgorithms::encryptRsa8(const std::vector<short int>& inputData, const short int & e, const short int & n)
+{
+	std::vector<int> encryptionResult;
+	encryptionResult.reserve(inputData.size());
+
+	for (auto value : inputData)
+	{
+		uint8_t valueBits8[] = {static_cast<uint8_t>(value), static_cast<uint8_t>(value >> 8)};
+		uint16_t valueBits16[2];
+		int encryptedValue;
+
+		valueBits16[0] = (uint16_t)powMod(valueBits8[0], e, n);
+		valueBits16[1] = (uint16_t)powMod(valueBits8[1], e, n);
+
+		std::memcpy(&encryptedValue, &valueBits16, sizeof(int));
+		encryptionResult.push_back(encryptedValue);
+	}
+
+	return std::move(encryptionResult);
+}
+
+std::vector<short int> EncryptionAlgorithms::decryptRsa8(const std::vector<int>& inputData, const short int & e, const short int & n)
 {
 	std::vector<short int> encryptionResult;
 	encryptionResult.reserve(inputData.size());
 
 	for (auto value : inputData)
 	{
-		uint8_t valueBits[] = {value, value >> 8};
+		uint16_t valueBits16[] = { static_cast<uint16_t>(value), static_cast<uint16_t>(value >> 16) };
+		uint8_t valueBits8[2];
 		short int encryptedValue;
 
-		valueBits[0] = (uint8_t)powMod(valueBits[0], e, n);
-		valueBits[1] = (uint8_t)powMod(valueBits[1], e, n);
+		valueBits8[0] = (uint8_t)powMod(valueBits16[0], e, n);
+		valueBits8[1] = (uint8_t)powMod(valueBits16[1], e, n);
 
-		std::memcpy(&encryptedValue, &valueBits, sizeof(short int));
+		std::memcpy(&encryptedValue, &valueBits8, sizeof(short int));
 		encryptionResult.push_back(encryptedValue);
 	}
 

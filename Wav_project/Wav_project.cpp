@@ -15,7 +15,7 @@
 
 int main()
 {
-	/*std::string filename = "samplemono.wav";
+	std::string filename = "samplemono.wav";
 	WavDecoder decoder;
 	std::vector<double> data;
 
@@ -28,26 +28,36 @@ int main()
 	if (decoder.getChannelsNumber() == 1)
 	{
 		//std::vector<__int16> tmpData;
-		auto tmpData = (decoder.getMonoData());
+		auto tmpData = (decoder.getAudioData());
 
-		for (std::vector<int>::iterator it = tmpData.begin(); it != tmpData.begin() + 10; ++it)
+		/*for (std::vector<short int>::iterator it = tmpData.begin(); it != tmpData.begin() + 10; ++it)
 		{
 			std::cout << *it;
 		}
-		std::cout << std::endl;
+		std::cout << std::endl;*/
 
 		for (auto sample : tmpData)
 		{
 			data.push_back(double(sample));
 		}
+		auto enc = EncryptionAlgorithms::encryptRsa8(tmpData, 481, 589);
+
+		auto dec = EncryptionAlgorithms::decryptRsa8(enc, 421, 589);
+
+		for (int i{}; i < dec.size(); ++i)
+		{
+			if (dec[i] != tmpData[i])
+				std::cout << "blad!\n";
+		}
+
 	}
 	else if (decoder.getChannelsNumber() == 2)
 	{
-		auto tmpData = decoder.getStereoData();
+		auto tmpData = decoder.getAudioData();
 
 		for (auto sample : tmpData)
 		{
-			data.push_back(sample.l);
+			data.push_back(sample);
 		}
 	}
 	else
@@ -55,14 +65,14 @@ int main()
 		return 0;
 	}
 
-	std::cout << "bez dobla: \n";
+	/*std::cout << "bez dobla: \n";
 	for (std::vector<double>::iterator it = data.begin(); it != data.begin() + 10; ++it)
 	{
 		std::cout << *it;
 	}
-	std::cout << std::endl;
+	std::cout << std::endl;*/
 
-	auto complexData = doubleToComplexVector(data);
+	/*auto complexData = doubleToComplexVector(data);
 
 	std::cout << "czysty: \n";
 	for (std::vector<std::complex<double>>::iterator it = complexData.begin(); it != complexData.begin()+10; ++it)
@@ -78,14 +88,14 @@ int main()
 	{
 		std::cout << *it;
 	}
-	std::cout << std::endl;
+	std::cout << std::endl;*/
 
 	//reverseFft(complexData);
-	std::cout << "\n\nnieczysty: \n";
+	/*std::cout << "\n\nnieczysty: \n";
 	for (std::vector<std::complex<double>>::iterator it = complexData.begin(); it != complexData.begin() + 10; ++it)
 	{
 		std::cout << *it;
-	}
+	}*/
 	std::cout << std::endl;
 
 
@@ -103,7 +113,7 @@ int main()
 		//display.join();
 	//}
 
-	decoder.writeToFile("dupa.wav");*/
+	decoder.writeToFile("dupa.wav");
 	/*
 	std::vector<std::complex<double>> dupa{-777.0, 2.0, 3.0, 4.0};
 
@@ -126,23 +136,23 @@ int main()
 	std::memcpy(&o, &b, sizeof(short int));
 	std::cout << o;*/
 
-	std::vector<short int> dupa;
+	/*std::vector<short int> dupa;
 	//uint8_t b[] = { 123, 1 };
-	short int o = -2137;
+	short int o = 32761;
 	//std::memcpy(&o, &b, sizeof(short int));
 
 	dupa.push_back(o);
 
-	auto keys = EncryptionAlgorithms::generateKeys(13, 11);
+	//auto keys = EncryptionAlgorithms::generateKeys(19, 11);
 
 	//std::cout << keys.publicKey << " " << keys.privateKey << " " << keys.modulKey << std::endl;
 
-	auto enc = EncryptionAlgorithms::Rsa8(dupa, keys.publicKey, keys.modulKey);
+	auto enc = EncryptionAlgorithms::encryptRsa8(dupa, 481, 589);
 
-	auto dec = EncryptionAlgorithms::Rsa8(enc, keys.privateKey, keys.modulKey);
+	auto dec = EncryptionAlgorithms::decryptRsa8(enc, 421, 589);
 
 	for (auto val : dec)
-		std::cout << val << "  ";
+		std::cout << val << "  ";*/
 
 	std::system("pause");
 	return 0;

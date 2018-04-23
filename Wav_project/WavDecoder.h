@@ -22,36 +22,29 @@ struct Wav_Data
 	unsigned long subchunk2Size;
 };
 
-struct WavStereoSample
-{
-	int l;
-	int r;
-};
-
 class WavDecoder
 {
 	Wav_Header fileHeader;
 	Wav_Data dataArgs;
 
-	std::vector<WavStereoSample> audioData;
-	short int* audioMonoData;
+	short int* audioData;
 
 	unsigned int samplesNumber;
 	
 public:
+	static std::vector<char> splitMonoToStereo(std::vector<short int>);
 
 	void readFile(std::string);
 	void writeToFile(std::string);
 
-	std::vector<short int> getMonoData();
-	std::vector<WavStereoSample> getStereoData();
+	std::vector<short int> getAudioData();
 
 	int getChannelsNumber();
 	int getNumberOfSamples();
 
 	Wav_Header getWavHeader();
 
-	void setMonoData(std::vector<short int> inputData);
+	void setData(std::vector<short int> inputData);
 
 	WavDecoder() {};
 	~WavDecoder() {};
