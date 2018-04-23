@@ -90,35 +90,35 @@ std::vector<int> EncryptionAlgorithms:: xor (const std::vector<int>& inputVector
 	return encryptedData;
 }
 
-std::vector<int> EncryptionAlgorithms::encryptRsa8(const std::vector<short int>& inputData, const short int & e, const short int & n)
-{
-	std::vector<int> encryptionResult;
-	encryptionResult.reserve(inputData.size());
-
-	for (auto value : inputData)
-	{
-		uint8_t valueBits8[] = {static_cast<uint8_t>(value), static_cast<uint8_t>(value >> 8)};
-		uint16_t valueBits16[2];
-		int encryptedValue;
-
-		valueBits16[0] = (uint16_t)powMod(valueBits8[0], e, n);
-		valueBits16[1] = (uint16_t)powMod(valueBits8[1], e, n);
-
-		std::memcpy(&encryptedValue, &valueBits16, sizeof(int));
-		encryptionResult.push_back(encryptedValue);
-	}
-
-	return std::move(encryptionResult);
-}
-
-std::vector<short int> EncryptionAlgorithms::decryptRsa8(const std::vector<int>& inputData, const short int & e, const short int & n)
+std::vector<short int> EncryptionAlgorithms::encryptRsa8(const std::vector<short int>& inputData, const short int & e, const short int & n)
 {
 	std::vector<short int> encryptionResult;
 	encryptionResult.reserve(inputData.size());
 
 	for (auto value : inputData)
 	{
-		uint16_t valueBits16[] = { static_cast<uint16_t>(value), static_cast<uint16_t>(value >> 16) };
+		uint8_t valueBits8[] = {static_cast<uint8_t>(value), static_cast<uint8_t>(value >> 8)};
+		short int valueBits16[2];
+		short int encryptedValue;
+
+		valueBits16[0] = (short int)powMod(valueBits8[0], e, n);
+		valueBits16[1] = (short int)powMod(valueBits8[1], e, n);
+
+		encryptionResult.push_back(valueBits16[0]);
+		encryptionResult.push_back(valueBits16[1]);
+	}
+
+	return std::move(encryptionResult);
+}
+
+std::vector<short int> EncryptionAlgorithms::decryptRsa8(const std::vector<short int>& inputData, const short int & e, const short int & n)
+{
+	std::vector<short int> encryptionResult;
+	encryptionResult.reserve(inputData.size());
+
+	for (int i{}; i < inputData.size(); i += 2)
+	{
+		short int valueBits16[] = { inputData[i], inputData[i + 1] };
 		uint8_t valueBits8[2];
 		short int encryptedValue;
 

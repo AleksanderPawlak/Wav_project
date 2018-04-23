@@ -44,10 +44,11 @@ int main()
 
 		auto dec = EncryptionAlgorithms::decryptRsa8(enc, 421, 589);
 
-		for (int i{}; i < dec.size(); ++i)
+		for (int i{}; i < tmpData.size(); ++i)
 		{
 			if (dec[i] != tmpData[i])
 				std::cout << "blad!\n";
+
 		}
 
 	}
