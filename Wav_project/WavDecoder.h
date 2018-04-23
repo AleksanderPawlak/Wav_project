@@ -47,5 +47,5 @@ public:
 	void setData(std::vector<short int> inputData);
 
 	WavDecoder() {};
-	~WavDecoder() {};
+	~WavDecoder() { delete[] audioData; };
 };

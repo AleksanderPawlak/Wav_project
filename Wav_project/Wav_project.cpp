@@ -42,7 +42,13 @@ int main()
 		}
 		auto enc = EncryptionAlgorithms::encryptRsa8(tmpData, 481, 589);
 
+		decoder.setData(enc);
+		decoder.writeToFile("pep.wav");
+
 		auto dec = EncryptionAlgorithms::decryptRsa8(enc, 421, 589);
+
+		decoder.setData(dec);
+		decoder.writeToFile("pep2.wav");
 
 		for (int i{}; i < tmpData.size(); ++i)
 		{

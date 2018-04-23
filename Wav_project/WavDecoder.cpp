@@ -118,10 +118,13 @@ Wav_Header WavDecoder::getWavHeader()
 
 void WavDecoder::setData(std::vector<short int> inputData)
 {
-	if (inputData.size() != samplesNumber)
+	/*if (inputData.size() != samplesNumber)
 	{
 		throw std::invalid_argument("Wrong vector size.");
-	}
+	}*/
+
+	delete[] audioData;
+	audioData = new short int[inputData.size()];
 
 	for (int i{}; i < inputData.size(); i++)
 	{
