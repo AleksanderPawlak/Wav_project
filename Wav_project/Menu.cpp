@@ -12,6 +12,25 @@
 #include "EncryptionAlgorithms.h"
 
 
+void Menu::showDataValues()
+{
+	auto data = decoder.getAudioData();
+
+	if (data.size() > 20)
+	{
+		for (int i{}; i < 20; i++)
+			std::cout << data[i] << "  ";
+		std::cout << std::endl;
+	}
+	else
+	{
+		for (auto value : data)
+			std::cout << value << "  ";
+		std::cout << std::endl;
+	}
+	std::system("pause");
+}
+
 void Menu::loadFile()
 {
 	std::string filename;
@@ -208,7 +227,8 @@ void Menu::runMenu()
 		{ "Wyswietl szczegoly pliku", std::bind(&Menu::displayHeaderBasics, this) },
 		{ "Wyswietl FFT pliku", std::bind(&Menu::displayFileFFT, this) },
 		{ "Wyswietl zawartosc pliku", std::bind(&Menu::displayFileData, this) },
-		{ "Szyfruj zawartosc pliku", std::bind(&Menu::encryptData, this) }
+		{ "Szyfruj zawartosc pliku", std::bind(&Menu::encryptData, this) },
+		{ "Wyswietl pierwsze wartosci danych z pliku", std::bind(&Menu::showDataValues, this) }
 	};
 
 	bool running{ true };
@@ -270,7 +290,7 @@ void DecoderMenu::revertRSA(WavDecoder & decoder)
 	std::cout << "n: ";
 	std::cin >> n;
 
-	auto dec = EncryptionAlgorithms::encryptRsa8(data, d, n);
+	auto dec = EncryptionAlgorithms::decryptRsa8(data, d, n);
 
 	this->handleEncryptionResult(decoder, dec);
 }
@@ -280,7 +300,7 @@ void DecoderMenu::doXOR(WavDecoder & decoder)
 	auto data = decoder.getAudioData();
 }
 
-void DecoderMenu::handleEncryptionResult(WavDecoder & decoder, const std::vector<short int>& dataVector)
+void DecoderMenu::handleEncryptionResult(WavDecoder & decoder, std::vector<short int>& dataVector)
 {
 	int choice{};
 
@@ -312,7 +332,7 @@ void DecoderMenu::handleEncryptionResult(WavDecoder & decoder, const std::vector
 				std::cout << std::endl;
 			}
 		}
-		else
+		else if(choice != 3)
 		{
 			std::cout << "Niepoprawna opcja.\n";
 		}

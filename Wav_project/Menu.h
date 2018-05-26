@@ -8,13 +8,14 @@ struct DecoderMenu
 	void doXOR(WavDecoder&);
 	
 private:
-	void handleEncryptionResult(WavDecoder&, const std::vector<short int>&);
+	void handleEncryptionResult(WavDecoder&, std::vector<short int>&);
 };
 
 class Menu
 {
 	WavDecoder decoder;
 
+	void showDataValues();
 	void loadFile();
 	void playFile();
 	void SaveFile();

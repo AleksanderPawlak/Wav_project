@@ -144,7 +144,7 @@ int main()
 	std::memcpy(&o, &b, sizeof(short int));
 	std::cout << o;*/
 
-	/*std::vector<short int> dupa;
+	std::vector<short int> dupa{-721, 222, -8, 48};
 	//uint8_t b[] = { 123, 1 };
 	short int o = 32761;
 	//std::memcpy(&o, &b, sizeof(short int));
@@ -160,11 +160,11 @@ int main()
 	auto dec = EncryptionAlgorithms::decryptRsa8(enc, 421, 589);
 
 	for (auto val : dec)
-		std::cout << val << "  ";*/
+		std::cout << val << "  ";
 	Menu m;
 	m.runMenu();
 
-	//std::system("pause");
+	std::system("pause");
 	return 0;
 }
 
