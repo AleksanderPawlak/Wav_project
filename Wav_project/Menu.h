@@ -25,8 +25,8 @@ class Menu
 	void displayHeaderBasics();
 
 public:
-	Menu();
-	~Menu();
+	Menu() {};
+	~Menu() {};
 
 	void runMenu();
 };

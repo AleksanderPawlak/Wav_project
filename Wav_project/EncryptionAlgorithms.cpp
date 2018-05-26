@@ -69,22 +69,19 @@ RsaKeys EncryptionAlgorithms::generateKeys(int p, int q)
 	return result;
 }
 
-std::vector<int> EncryptionAlgorithms:: xor (const std::vector<int>& inputVector, const std::vector<int> keyVector)
+std::vector<short int> EncryptionAlgorithms:: xor (const std::vector<short int>& inputVector,
+	const std::vector<short int> keyVector)
 {
-	std::vector<int> encryptedData;
+	std::vector<short int> encryptedData;
 	encryptedData.reserve(inputVector.size());
 
-	int i{};
-
-	for (auto value : inputVector)
+	for (int i{}, j{}; i < inputVector.size(); i++, j++)
 	{
-		if (i == keyVector.size())
-			i = 0;
+		if (j == keyVector.size())
+			j = 0;
 
-		int encrypted = value ^ keyVector[i];
-		encryptedData.push_back(encrypted);
-
-		i++;
+		short int encryptedValue = inputVector[i] ^ keyVector[j];
+		encryptedData.push_back(encryptedValue);
 	}
 
 	return encryptedData;

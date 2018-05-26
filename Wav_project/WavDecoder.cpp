@@ -125,4 +125,6 @@ void WavDecoder::setData(std::vector<short int> inputData)
 	{
 		audioData[i] = inputData[i];
 	}
+
+	samplesNumber = inputData.size();
 }

@@ -102,6 +102,10 @@ void Menu::displayFileFFT()
 
 	std::thread display(DisplayComplexVector, complexData, "", -1);
 
+	std::cout << "pierwsze 10 probek z fft dla danych:\n";
+	for (int i{}; i < 10; i++)
+		std::cout << complexData[i] << "  ";
+	std::cout << std::endl;
 	std::system("pause");
 
 	if (display.joinable())
@@ -109,16 +113,14 @@ void Menu::displayFileFFT()
 		display.join();
 	}
 
-	std::cout << "Czy chcesz wyswietlic odwrotna transformate?(Y/N)\n";
+	std::cout << "Czy chcesz wyswietlic odwrotna transformate?(Y)\n";
 	std::cin >> response;
 
-	if (response == "Y") 
+	if (response == "Y" || response == "y")
 	{
-		//fft(complexData);
 		reverseFft(complexData);
 
 		std::thread display(DisplayComplexVector, complexData, "", -1);
-
 		std::system("pause");
 
 		if (display.joinable())
@@ -165,8 +167,9 @@ void Menu::encryptData()
 	DecoderMenu decMenu;
 
 	std::vector<std::pair<std::string, std::function<void(WavDecoder&)>>> options{
-		{ "Zaszyfruj algorytmem RSA", std::bind(&DecoderMenu::doRSA, decMenu, std::placeholders::_1) },
-		{ "Odszyfruj algorytmem RSA", std::bind(&DecoderMenu::revertRSA, decMenu, std::placeholders::_1) }
+		{ "Zaszyfruj 8 bitowym algorytmem RSA", std::bind(&DecoderMenu::doRSA, decMenu, std::placeholders::_1) },
+		{ "Odszyfruj 8 bitowym algorytmem RSA", std::bind(&DecoderMenu::revertRSA, decMenu, std::placeholders::_1) },
+		{ "Uzyj algorytmu XOR", std::bind(&DecoderMenu::doXOR, decMenu, std::placeholders::_1) }
 	};
 
 	while (running)
@@ -210,14 +213,6 @@ void Menu::displayHeaderBasics()
 	std::system("pause");
 }
 
-Menu::Menu()
-{
-}
-
-Menu::~Menu()
-{
-}
-
 void Menu::runMenu()
 {
 	std::vector<std::pair<std::string, std::function<void()>>> options{
@@ -243,7 +238,7 @@ void Menu::runMenu()
 			std::cout << i << ". " << options[i].first << std::endl;
 		}
 
-		std::cout << options.size() << ". Zakoñcz.\n";
+		std::cout << options.size() << ". Zakoncz.\n";
 
 		std::cin >> choice;
 
@@ -297,7 +292,23 @@ void DecoderMenu::revertRSA(WavDecoder & decoder)
 
 void DecoderMenu::doXOR(WavDecoder & decoder)
 {
+	int size;
+	short int key;
+	std::vector<short int> keys;
 	auto data = decoder.getAudioData();
+
+	std::cout << "Podaj ilosc kluczy do szyfrowania: ";
+	std::cin >> size;
+	for (int i{}; i < size; i++)
+	{
+		std::cout << "klucz: ";
+		std::cin >> key;
+		keys.push_back(key);
+	}
+
+	auto dec = EncryptionAlgorithms:: xor (data, keys);
+
+	this->handleEncryptionResult(decoder, dec);
 }
 
 void DecoderMenu::handleEncryptionResult(WavDecoder & decoder, std::vector<short int>& dataVector)
