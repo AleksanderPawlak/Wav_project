@@ -20,7 +20,7 @@ void WavDecoder::readFile(std::string filename1)
 	errno_t openError = fopen_s(&file, filename, "rb");
 
 
-	if (file == NULL || openError)
+	if (file == NULL || openError != 0)
 	{
 		throw std::exception("Problem with file");
 	}

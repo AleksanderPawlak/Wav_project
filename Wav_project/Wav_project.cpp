@@ -10,12 +10,13 @@
 #include "DataAlgorithms.h"
 #include "WavDecoder.h"
 #include "EncryptionAlgorithms.h"
+#include "Menu.h"
 
 #include <bitset>
 
 int main()
 {
-	std::string filename = "samplemono.wav";
+	/*std::string filename = "samplemono.wav";
 	WavDecoder decoder;
 	std::vector<double> data;
 
@@ -28,14 +29,14 @@ int main()
 	if (decoder.getChannelsNumber() == 1)
 	{
 		//std::vector<__int16> tmpData;
-		auto tmpData = (decoder.getAudioData());
+		auto tmpData = (decoder.getAudioData());*/
 
 		/*for (std::vector<short int>::iterator it = tmpData.begin(); it != tmpData.begin() + 10; ++it)
 		{
 			std::cout << *it;
 		}
 		std::cout << std::endl;*/
-
+	/*
 		for (auto sample : tmpData)
 		{
 			data.push_back(double(sample));
@@ -70,7 +71,7 @@ int main()
 	else
 	{
 		return 0;
-	}
+	}*/
 
 	/*std::cout << "bez dobla: \n";
 	for (std::vector<double>::iterator it = data.begin(); it != data.begin() + 10; ++it)
@@ -103,7 +104,7 @@ int main()
 	{
 		std::cout << *it;
 	}*/
-	std::cout << std::endl;
+	/*std::cout << std::endl;
 
 
 	//std::thread display(DisplayComplexVector, complexData, filename, -1);
@@ -120,7 +121,7 @@ int main()
 		//display.join();
 	//}
 
-	decoder.writeToFile("dupa.wav");
+	decoder.writeToFile("dupa.wav");*/
 	/*
 	std::vector<std::complex<double>> dupa{-777.0, 2.0, 3.0, 4.0};
 
@@ -160,8 +161,10 @@ int main()
 
 	for (auto val : dec)
 		std::cout << val << "  ";*/
+	Menu m;
+	m.runMenu();
 
-	std::system("pause");
+	//std::system("pause");
 	return 0;
 }
 
