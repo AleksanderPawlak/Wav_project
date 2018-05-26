@@ -128,3 +128,39 @@ std::vector<short int> EncryptionAlgorithms::decryptRsa8(const std::vector<short
 
 	return std::move(encryptionResult);
 }
+
+std::vector<short int> EncryptionAlgorithms::encryptRsa16(const std::vector<short int>& inputData, const short int & e, const short int & n)
+{
+	std::vector<short int> encryptionResult;
+	encryptionResult.reserve(inputData.size() * 2);
+
+	for (auto value: inputData)
+	{
+		int encryptedValue = powMod(value, e, n);
+
+		short int encryptedBlock[] = { static_cast<short int>(value), static_cast<short int>(value >> 16) };
+		encryptionResult.push_back(encryptedBlock[0]);
+		encryptionResult.push_back(encryptedBlock[1]);
+	}
+
+	return encryptionResult;
+}
+
+std::vector<short int> EncryptionAlgorithms::decryptRsa16(const std::vector<short int>& inputData, const short int & e, const short int & n)
+{
+	std::vector<short int> encryptionResult;
+	encryptionResult.reserve(inputData.size());
+
+	for (int i{}; i < inputData.size(); i += 2)
+	{
+		int intEncrypted;
+		short int valueBits16[] = { inputData[i], inputData[i + 1] };
+		std::memcpy(&intEncrypted, &valueBits16, sizeof(int));
+
+		short int decryptedValue = (short int)powMod(intEncrypted, e, n);
+
+		encryptionResult.push_back(decryptedValue);
+	}
+
+	return std::move(encryptionResult);
+}

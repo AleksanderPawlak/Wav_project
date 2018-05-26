@@ -23,5 +23,7 @@ namespace EncryptionAlgorithms
 
 	std::vector<short int> encryptRsa8 (const std::vector<short int>& inputData, const short int & e, const short int & n);
 	std::vector<short int> decryptRsa8(const std::vector<short int>& inputData, const short int & e, const short int & n);
+	std::vector<short int> encryptRsa16(const std::vector<short int>& inputData, const short int & e, const short int & n);
+	std::vector<short int> decryptRsa16(const std::vector<short int>& inputData, const short int & e, const short int & n);
 };
 
