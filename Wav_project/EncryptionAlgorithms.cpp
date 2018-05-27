@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "EncryptionAlgorithms.h"
 
-
 bool EncryptionAlgorithms::isPrime(int number)
 {
 	for (int i{}; i < number; i++) 
@@ -37,7 +36,6 @@ int EncryptionAlgorithms::inverseModulo(int a, int b)
 int EncryptionAlgorithms::powMod(int value, int pow, int m)
 {
 	int pot, result, q;
-
 	pot = value; result = 1; 
 
 	for (q = pow; q > 0; q /= 2)
@@ -45,6 +43,21 @@ int EncryptionAlgorithms::powMod(int value, int pow, int m)
 		if (q % 2) result = (result * pot) % m;
 		pot = (pot * pot) % m;
 	}
+
+	return result;
+}
+
+boostInt::int256_t EncryptionAlgorithms::powMod128(boostInt::int128_t value, boostInt::int128_t pow, boostInt::int128_t m)
+{
+	boostInt::int256_t pot, result, q;
+	pot = value; result = 1;
+
+	for (q = pow; q > 0; q /= 2)
+	{
+		if (q % 2) result = (result * pot) % m;
+		pot = (pot * pot) % m;
+	}
+
 	return result;
 }
 
@@ -164,3 +177,36 @@ std::vector<short int> EncryptionAlgorithms::decryptRsa16(const std::vector<shor
 
 	return std::move(encryptionResult);
 }
+
+std::vector<short int> EncryptionAlgorithms::encryptRsa128(std::vector<short int> inputData, boostInt::int128_t e, boostInt::int128_t n)
+{
+	std::vector<short int> result;
+	result.reserve(inputData.size() * 8);
+
+	if (inputData.size() % 8 != 0)
+	{
+		int missingSpace = 8 - inputData.size() % 8;
+		for (int i{}; i < missingSpace; i++)
+			inputData.push_back(0);
+	}
+
+	for (int i{}; i < inputData.size(); i += 8)
+	{
+		std::vector<short int> tmpVec;
+		boostInt::int128_t dataBlock;
+
+		for (int j{}; j < 8; j++)
+			tmpVec.push_back(inputData[i + j]);
+
+		boostInt::import_bits(dataBlock, tmpVec.begin(), tmpVec.end(), 16);
+		boostInt::int256_t encryptedBlock = powMod128(dataBlock, e, n);
+		boostInt::export_bits(encryptedBlock, std::back_inserter(result), 16);
+	}
+
+	return result;
+}
+/*
+std::vector<short int> EncryptionAlgorithms::decryptRsa128(const std::vector<short int>& inputData, const boostInt::int128_t & e, const boostInt::int128_t & n)
+{
+	return std::vector<short int>();
+}*/
