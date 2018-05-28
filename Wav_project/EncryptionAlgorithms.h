@@ -20,6 +20,13 @@ struct RsaKeys128
 	boostInt::int128_t modulKey;
 };
 
+struct RsaKeys256
+{
+	boostInt::int256_t privateKey;
+	boostInt::int256_t publicKey;
+	boostInt::int256_t modulKey;
+};
+
 namespace EncryptionAlgorithms
 {
 
@@ -31,12 +38,12 @@ namespace EncryptionAlgorithms
 	boostInt::int128_t random128Value();
 	bool isPrime128(boostInt::int128_t);
 	boostInt::int128_t inverseModulo128(boostInt::int128_t, boostInt::int128_t);
-	boostInt::int256_t powMod128(boostInt::int128_t, boostInt::int128_t, boostInt::int128_t);
+	boostInt::int256_t powMod128(boostInt::int256_t, boostInt::int256_t, boostInt::int256_t);
 	std::pair<boostInt::int128_t, boostInt::int128_t> Prime128Random();
-
 
 	RsaKeys generateKeys(int, int);
 	RsaKeys128 generateKeys128(boostInt::int128_t, boostInt::int128_t);
+	RsaKeys256 generateKeys256(boostInt::int256_t, boostInt::int256_t);
 
 	std::vector<short int> xor (const std::vector<short int>& inputVector, const std::vector<short int> keyVector);
 
