@@ -127,4 +127,5 @@ void WavDecoder::setData(std::vector<short int> inputData)
 	}
 
 	samplesNumber = inputData.size();
+	dataArgs.subchunk2Size = inputData.size() * fileHeader.numChannels * fileHeader.bitsPerSample / 8;
 }

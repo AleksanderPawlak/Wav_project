@@ -16,9 +16,10 @@
 
 int main()
 {
-	//Menu m;
-	//m.runMenu();
 
+	Menu m;
+	m.runMenu();
+	
 	/*ComplexVec d = {1,2,3,4, 5};
 
 
@@ -82,18 +83,18 @@ int main()
 	for (auto i : res)
 		std::cout << i << " ";
 	std::cout << std::endl;*/
-
+	
 	boostInt::int256_t ser, pep, sen;
 	ser.assign("52751510013433959741152243176812731813");
 	pep.assign("68024952896801804974038439994705433499");
 	sen.assign("123121442");
 	auto mem = EncryptionAlgorithms::generateKeys256(ser, pep);
-
+	
 	/*std::cout << mem.privateKey << std::endl;
 	std::cout << mem.publicKey << std::endl;
 	std::cout << mem.modulKey << std::endl;*/
-
-	std::vector<short int> dupa = {1243, -12223, 1, 1, 1, 1, -4321, 832, 77, 1};
+	
+	std::vector<short int> dupa = {1243, -12223, 1, 1, 12221, 32318, -4321, 28218, -28218, 77, 1, 92, 340, 12, 44, -21, 40};
 
 	auto enc = EncryptionAlgorithms::encryptRsa128(dupa, mem.publicKey, mem.modulKey);
 	std::cout << enc.size() << std::endl;
@@ -104,6 +105,7 @@ int main()
 	std::cout << std::endl;
 
 	std::system("pause");
+
 	return 0;
 }
 

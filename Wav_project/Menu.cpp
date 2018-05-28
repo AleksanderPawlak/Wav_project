@@ -6,6 +6,10 @@
 #include <functional>
 #include <string>
 #include <thread>
+#include <fstream>
+#include <string>
+#include <stdexcept>
+#include <algorithm>
 
 #include <SFML\Audio.hpp>
 #include "DataAlgorithms.h"
@@ -169,7 +173,9 @@ void Menu::encryptData()
 	std::vector<std::pair<std::string, std::function<void(WavDecoder&)>>> options{
 		{ "Zaszyfruj 8 bitowym algorytmem RSA", std::bind(&DecoderMenu::doRSA, decMenu, std::placeholders::_1) },
 		{ "Odszyfruj 8 bitowym algorytmem RSA", std::bind(&DecoderMenu::revertRSA, decMenu, std::placeholders::_1) },
-		{ "Uzyj algorytmu XOR", std::bind(&DecoderMenu::doXOR, decMenu, std::placeholders::_1) }
+		{ "Uzyj algorytmu XOR", std::bind(&DecoderMenu::doXOR, decMenu, std::placeholders::_1) },
+		{ "Zaszyfruj 128 bitowym algorytmem RSA", std::bind(&DecoderMenu::doRSA128, decMenu, std::placeholders::_1) },
+		{ "Odszyfruj 128 bitowym algorytmem RSA", std::bind(&DecoderMenu::revertRSA128, decMenu, std::placeholders::_1) }
 	};
 
 	while (running)
@@ -263,11 +269,34 @@ void DecoderMenu::doRSA(WavDecoder & decoder)
 	int e, n;
 	auto data = decoder.getAudioData();
 
-	std::cout << "Podaj kolejne wartoœci kluczy RSA:\n";
-	std::cout << "e: ";
-	std::cin >> e;
-	std::cout << "n: ";
-	std::cin >> n;
+	std::cout << "Podaj kolejne wartoœci kluczy RSA: (wpisz '-1' aby wygenerowac " <<
+		"klucze z liczb pierwszych w pliku konfiguracyjnym)\n";
+	
+	do {
+		std::cout << "e: ";
+		std::cin >> e;
+
+		if (e == -1)
+		{
+			try
+			{
+				auto keys = RSAKeysFromConfig("8BitPrimes.txt");
+				e = keys.publicKey;
+				n = keys.modulKey;
+			}
+			catch (std::runtime_error& error)
+			{
+				std::cout << error.what();
+				e = 0;
+			}
+		}
+		else
+		{
+			std::cout << "n: ";
+			std::cin >> n;
+		}
+
+	} while (e == 0);
 
 	auto enc = EncryptionAlgorithms::encryptRsa8(data, e, n);
 
@@ -279,13 +308,112 @@ void DecoderMenu::revertRSA(WavDecoder & decoder)
 	int d, n;
 	auto data = decoder.getAudioData();
 
-	std::cout << "Podaj kolejne wartoœci kluczy RSA:\n";
-	std::cout << "d: ";
-	std::cin >> d;
-	std::cout << "n: ";
-	std::cin >> n;
+	std::cout << "Podaj kolejne wartoœci kluczy RSA: (wpisz '-1' aby wygenerowac " <<
+		"klucze z liczb pierwszych w pliku konfiguracyjnym)\n";
+	do {
+		std::cout << "d: ";
+		std::cin >> d;
+
+		if (d == -1)
+		{
+			try
+			{
+				auto keys = RSAKeysFromConfig("8BitPrimes.txt");
+				d = keys.privateKey;
+				n = keys.modulKey;
+			}
+			catch (std::runtime_error& error)
+			{
+				std::cout << error.what();
+				d = 0;
+			}
+		}
+		else
+		{
+			std::cout << "n: ";
+			std::cin >> n;
+		}
+
+	} while (d == 0);
 
 	auto dec = EncryptionAlgorithms::decryptRsa8(data, d, n);
+
+	this->handleEncryptionResult(decoder, dec);
+}
+
+void DecoderMenu::doRSA128(WavDecoder & decoder)
+{
+	boostInt::int256_t e, n;
+	auto data = decoder.getAudioData();
+
+	std::cout << "Podaj kolejne wartoœci kluczy RSA: (wpisz '-1' aby wygenerowac " <<
+		"klucze z liczb pierwszych w pliku konfiguracyjnym)\n";
+
+	do {
+		std::cout << "e: ";
+		std::cin >> e;
+
+		if (e == -1)
+		{
+			try
+			{
+				auto keys = RSA256KeysFromConfig("128BitPrimes.txt");
+				e = keys.publicKey;
+				n = keys.modulKey;
+			}
+			catch (std::runtime_error& error)
+			{
+				std::cout << error.what();
+				e = 0;
+			}
+		}
+		else
+		{
+			std::cout << "n: ";
+			std::cin >> n;
+		}
+
+	} while (e == 0);
+
+	auto enc = EncryptionAlgorithms::encryptRsa128(data, e, n);
+	std::cout << "saldpa\n";
+	this->handleEncryptionResult(decoder, enc);
+}
+
+void DecoderMenu::revertRSA128(WavDecoder & decoder)
+{
+	boostInt::int256_t d, n;
+	auto data = decoder.getAudioData();
+
+	std::cout << "Podaj kolejne wartoœci kluczy RSA: (wpisz '-1' aby wygenerowac " <<
+		"klucze z liczb pierwszych w pliku konfiguracyjnym)\n";
+	do {
+		std::cout << "d: ";
+		std::cin >> d;
+
+		if (d == -1)
+		{
+			try
+			{
+				RsaKeys<boostInt::int256_t> keys = RSA256KeysFromConfig("128BitPrimes.txt");
+				d = keys.privateKey;
+				n = keys.modulKey;
+			}
+			catch (std::runtime_error& error)
+			{
+				std::cout << error.what();
+				d = 0;
+			}
+		}
+		else
+		{
+			std::cout << "n: ";
+			std::cin >> n;
+		}
+
+	} while (d == 0);
+
+	auto dec = EncryptionAlgorithms::decryptRsa128(data, d, n);
 
 	this->handleEncryptionResult(decoder, dec);
 }
@@ -309,6 +437,46 @@ void DecoderMenu::doXOR(WavDecoder & decoder)
 	auto dec = EncryptionAlgorithms:: xor (data, keys);
 
 	this->handleEncryptionResult(decoder, dec);
+}
+
+RsaKeys<boostInt::int256_t> DecoderMenu::RSA256KeysFromConfig(std::string filename)
+{
+	boostInt::int256_t firstValue, secondValue;
+	std::string first, second;
+	std::ifstream configFile;
+	configFile.open(filename);
+
+	if (!configFile.is_open())
+	{
+		throw std::runtime_error("Problem with RSA config file " + filename);
+	}
+
+	configFile >> first >> second;
+
+	firstValue.assign(first);
+	secondValue.assign(second);
+
+	return EncryptionAlgorithms::generateKeys256(firstValue, secondValue);
+}
+
+RsaKeys<int> DecoderMenu::RSAKeysFromConfig(std::string filename)
+{
+	int firstValue, secondValue;
+	std::string first, second;
+	std::ifstream configFile;
+	configFile.open(filename);
+
+	if (!configFile.is_open())
+	{
+		throw std::runtime_error("Problem with RSA config file " + filename);
+	}
+
+	configFile >> first >> second;
+
+	firstValue = std::stoi(first);
+	secondValue = std::stoi(second);
+
+	return EncryptionAlgorithms::generateKeys(firstValue, secondValue);
 }
 
 void DecoderMenu::handleEncryptionResult(WavDecoder & decoder, std::vector<short int>& dataVector)

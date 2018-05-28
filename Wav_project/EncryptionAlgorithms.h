@@ -6,32 +6,19 @@
 
 namespace boostInt = boost::multiprecision;
 
+template<typename Type>
 struct RsaKeys
 {
-	int privateKey;
-	int publicKey;
-	int modulKey;
+	Type privateKey;
+	Type publicKey;
+	Type modulKey;
 };
 
-struct RsaKeys128
-{
-	boostInt::int128_t privateKey;
-	boostInt::int128_t publicKey;
-	boostInt::int128_t modulKey;
-};
-
-struct RsaKeys256
-{
-	boostInt::int256_t privateKey;
-	boostInt::int256_t publicKey;
-	boostInt::int256_t modulKey;
-};
 
 namespace EncryptionAlgorithms
 {
 
 	bool isPrime(int);
-	int nwd(int, int);
 
 	template<typename type>
 	type inverseModulo(type, type);
@@ -40,26 +27,19 @@ namespace EncryptionAlgorithms
 	
 	boostInt::int128_t random128Value();
 	bool isPrime128(boostInt::int128_t);
-	//boostInt::int128_t inverseModulo128(boostInt::int128_t, boostInt::int128_t);
 	boostInt::int512_t powMod128(boostInt::int512_t, boostInt::int256_t, boostInt::int256_t);
 	std::pair<boostInt::int128_t, boostInt::int128_t> Prime128Random();
 
-	//boostInt::int256_t inverseModulo256(boostInt::int256_t, boostInt::int256_t);
-
-	RsaKeys generateKeys(int, int);
-	RsaKeys128 generateKeys128(boostInt::int128_t, boostInt::int128_t);
-	RsaKeys256 generateKeys256(boostInt::int256_t, boostInt::int256_t);
+	RsaKeys<int> generateKeys(int, int);
+	RsaKeys<boostInt::int256_t> generateKeys256(boostInt::int256_t, boostInt::int256_t);
 
 	std::vector<short int> xor (const std::vector<short int>& inputVector, const std::vector<short int> keyVector);
 
 	std::vector<short int> encryptRsa8 (const std::vector<short int>& inputData, const short int & e, const short int & n);
 	std::vector<short int> decryptRsa8(const std::vector<short int>& inputData, const short int & e, const short int & n);
 
-	std::vector<short int> encryptRsa16(const std::vector<short int>& inputData, const short int & e, const short int & n);
-	std::vector<short int> decryptRsa16(const std::vector<short int>& inputData, const short int & e, const short int & n);
-
 	std::vector<short int> encryptRsa128(std::vector<short int> inputData, boostInt::int256_t e, boostInt::int256_t n);
-	std::vector<short int> decryptRsa128(const std::vector<short int>& inputData, const boostInt::int256_t & e, const boostInt::int256_t & n);
+	std::vector<short int> decryptRsa128(std::vector<short int> inputData, const boostInt::int256_t & e, const boostInt::int256_t & n);
 
 	template<typename type>
 	type inverseModulo(type a, type b)

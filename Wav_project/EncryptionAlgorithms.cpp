@@ -16,19 +16,6 @@ bool EncryptionAlgorithms::isPrime(int number)
 	return true;
 }
 
-int EncryptionAlgorithms::nwd(int a, int b)
-{
-	while (a != b)
-	{
-		if (a > b)
-			a -= b;
-		else
-			b -= a;
-	}
-
-	return a;
-}
-
 int EncryptionAlgorithms::powMod(int value, int pow, int m)
 {
 	int pot, result, q;
@@ -70,36 +57,6 @@ bool EncryptionAlgorithms::isPrime128(boostInt::int128_t number)
 	return true;
 }
 
-/*boostInt::int128_t EncryptionAlgorithms::inverseModulo128(boostInt::int128_t a, boostInt::int128_t b)
-{
-	boostInt::int128_t b0 = b, t, q;
-	boostInt::int128_t x0 = 0, x1 = 1;
-
-	if (b == 1) return 1;
-	while (a > 1) {
-		q = a / b;
-		t = b, b = a % b, a = t;
-		t = x0, x0 = x1 - q * x0, x1 = t;
-	}
-	if (x1 < 0) x1 += b0;
-	return x1;
-}*/
-
-/*boostInt::int256_t EncryptionAlgorithms::inverseModulo256(boostInt::int256_t a, boostInt::int256_t b)
-{
-	boostInt::int256_t b0 = b, t, q;
-	boostInt::int256_t x0 = 0, x1 = 1;
-
-	if (b == 1) return 1;
-	while (a > 1) {
-		q = a / b;
-		t = b, b = a % b, a = t;
-		t = x0, x0 = x1 - q * x0, x1 = t;
-	}
-	if (x1 < 0) x1 += b0;
-	return x1;
-}*/
-
 boostInt::int512_t EncryptionAlgorithms::powMod128(boostInt::int512_t value, boostInt::int256_t pow, boostInt::int256_t m)
 {
 	boostInt::int512_t pot, result, q;
@@ -134,9 +91,9 @@ std::pair<boostInt::int128_t, boostInt::int128_t> EncryptionAlgorithms::Prime128
 	return result;
 }
 
-RsaKeys EncryptionAlgorithms::generateKeys(int p, int q)
+RsaKeys<int> EncryptionAlgorithms::generateKeys(int p, int q)
 {	
-	RsaKeys result;
+	RsaKeys<int> result;
 
 	int phi = (p - 1) * (q - 1);
 
@@ -144,7 +101,7 @@ RsaKeys EncryptionAlgorithms::generateKeys(int p, int q)
 
 	for (int i{ 3 }; i < result.modulKey; i++)
 	{
-		if (nwd(i, phi) == 1)
+		if (boost::math::gcd(i, phi) == 1)
 		{
 			result.publicKey = i;
 			result.privateKey = inverseModulo(i, phi);
@@ -155,31 +112,9 @@ RsaKeys EncryptionAlgorithms::generateKeys(int p, int q)
 	return result;
 }
 
-RsaKeys128 EncryptionAlgorithms::generateKeys128(boostInt::int128_t p, boostInt::int128_t q)
+RsaKeys<boostInt::int256_t> EncryptionAlgorithms::generateKeys256(boostInt::int256_t p, boostInt::int256_t q)
 {
-	RsaKeys128 result;
-
-	boostInt::int128_t phi = (p - 1) * (q - 1);
-
-	result.modulKey = p * q;
-
-	boostInt::int128_t i = result.modulKey - 1;
-	for (; i > 0; i--)
-	{
-		if (boost::math::gcd(i, phi) == 1 && i != phi)
-		{
-			result.publicKey = i;
-			result.privateKey = inverseModulo(i, phi);
-			break;
-		}
-	}
-
-	return result;
-}
-
-RsaKeys256 EncryptionAlgorithms::generateKeys256(boostInt::int256_t p, boostInt::int256_t q)
-{
-	RsaKeys256 result;
+	RsaKeys<boostInt::int256_t> result;
 
 	boostInt::int256_t phi = (p - 1) * (q - 1);
 
@@ -259,42 +194,6 @@ std::vector<short int> EncryptionAlgorithms::decryptRsa8(const std::vector<short
 	return std::move(encryptionResult);
 }
 
-std::vector<short int> EncryptionAlgorithms::encryptRsa16(const std::vector<short int>& inputData, const short int & e, const short int & n)
-{
-	std::vector<short int> encryptionResult;
-	encryptionResult.reserve(inputData.size() * 2);
-
-	for (auto value: inputData)
-	{
-		int encryptedValue = powMod(value, e, n);
-
-		short int encryptedBlock[] = { static_cast<short int>(value), static_cast<short int>(value >> 16) };
-		encryptionResult.push_back(encryptedBlock[0]);
-		encryptionResult.push_back(encryptedBlock[1]);
-	}
-
-	return encryptionResult;
-}
-
-std::vector<short int> EncryptionAlgorithms::decryptRsa16(const std::vector<short int>& inputData, const short int & e, const short int & n)
-{
-	std::vector<short int> encryptionResult;
-	encryptionResult.reserve(inputData.size());
-
-	for (int i{}; i < inputData.size(); i += 2)
-	{
-		int intEncrypted;
-		short int valueBits16[] = { inputData[i], inputData[i + 1] };
-		std::memcpy(&intEncrypted, &valueBits16, sizeof(int));
-
-		short int decryptedValue = (short int)powMod(intEncrypted, e, n);
-
-		encryptionResult.push_back(decryptedValue);
-	}
-
-	return std::move(encryptionResult);
-}
-
 std::vector<short int> EncryptionAlgorithms::encryptRsa128(std::vector<short int> inputData, boostInt::int256_t e, boostInt::int256_t n)
 {
 	std::vector<short int> result;
@@ -316,19 +215,24 @@ std::vector<short int> EncryptionAlgorithms::encryptRsa128(std::vector<short int
 			tmpVec.push_back(inputData[i + j]);
 
 		boostInt::import_bits(dataBlock, tmpVec.begin(), tmpVec.end(), 16);
-		std::cout << "blok in  " << dataBlock << std::endl;
 		boostInt::int512_t encryptedBlock = powMod128(dataBlock, e, n);
-		std::cout << "seks  " << encryptedBlock << std::endl;
 		boostInt::export_bits(encryptedBlock, std::back_inserter(result), 16);
 	}
 	
 	return result;
 }
 
-std::vector<short int> EncryptionAlgorithms::decryptRsa128(const std::vector<short int>& inputData, const boostInt::int256_t & e, const boostInt::int256_t & n)
+std::vector<short int> EncryptionAlgorithms::decryptRsa128(std::vector<short int> inputData, const boostInt::int256_t & e, const boostInt::int256_t & n)
 {
 	std::vector<short int> result;
 	result.reserve(inputData.size() / 2);
+
+	if (inputData.size() % 16 != 0)
+	{
+		int missingSpace = 16 - inputData.size() % 16;
+		for (int i{}; i < missingSpace; i++)
+			inputData.push_back(0);
+	}
 
 	for (int i{}; i < inputData.size(); i += 16)
 	{
@@ -336,14 +240,16 @@ std::vector<short int> EncryptionAlgorithms::decryptRsa128(const std::vector<sho
 		boostInt::int256_t dataBlock;
 
 		for (int j{}; j < 16; j++)
+		{
 			tmpVec.push_back(inputData[i + j]);
-
+		}
 		boostInt::import_bits(dataBlock, tmpVec.begin(), tmpVec.end(), 16);
-		std::cout << "seks  " << dataBlock << std::endl;
 		boostInt::int512_t decryptedBlock = powMod128(dataBlock, e, n);
-		std::cout << "blok out  " << decryptedBlock << std::endl;
 		boostInt::export_bits(decryptedBlock, std::back_inserter(result), 16);
 	}
+
+	while (result.back() == 0)
+		result.pop_back();
 
 	return result;
 }
