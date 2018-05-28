@@ -82,29 +82,26 @@ int main()
 	for (auto i : res)
 		std::cout << i << " ";
 	std::cout << std::endl;*/
-	boostInt::int256_t suk;
-	boostInt::int128_t ser, pep, sen;
+
+	boostInt::int256_t ser, pep, sen;
 	ser.assign("52751510013433959741152243176812731813");
 	pep.assign("68024952896801804974038439994705433499");
-	sen.assign("527");
-	suk = ser;
+	sen.assign("123121442");
+	auto mem = EncryptionAlgorithms::generateKeys256(ser, pep);
 
-	auto mem = EncryptionAlgorithms::generateKeys128(ser, pep);
-
-	std::cout << mem.privateKey << std::endl;
+	/*std::cout << mem.privateKey << std::endl;
 	std::cout << mem.publicKey << std::endl;
-	std::cout << mem.modulKey << std::endl;
+	std::cout << mem.modulKey << std::endl;*/
 
-	std::vector<short int> dupa = {1, -1, 1, 1, 1, 1, -1, 1};
+	std::vector<short int> dupa = {1243, -12223, 1, 1, 1, 1, -4321, 832, 77, 1};
 
 	auto enc = EncryptionAlgorithms::encryptRsa128(dupa, mem.publicKey, mem.modulKey);
+	std::cout << enc.size() << std::endl;
 	auto dec = EncryptionAlgorithms::decryptRsa128(enc, mem.privateKey, mem.modulKey);
 
 	for (auto v : dec)
 		std::cout << v << "  ";
 	std::cout << std::endl;
-	//std::cout << "amammam "  << EncryptionAlgorithms::powMod128(EncryptionAlgorithms::powMod128(12122, mem.publicKey, mem.modulKey), mem.privateKey, mem.modulKey) << std::endl;
-	//seks.assign("22535833610500932295038042708271200209190285849060804598076968552725383424859");
 
 	std::system("pause");
 	return 0;
