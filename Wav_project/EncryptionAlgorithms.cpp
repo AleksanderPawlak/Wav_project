@@ -1,9 +1,13 @@
 #include "stdafx.h"
 #include "EncryptionAlgorithms.h"
+#include <boost\random.hpp>
+#include <boost\generator_iterator.hpp>
+#include <boost\math\common_factor_rt.hpp>
+
 
 bool EncryptionAlgorithms::isPrime(int number)
 {
-	for (int i{}; i < number; i++) 
+	for (int i{2}; i < number; i++) 
 	{
 		if (number % i == 0)
 			return false;
@@ -47,6 +51,48 @@ int EncryptionAlgorithms::powMod(int value, int pow, int m)
 	return result;
 }
 
+boostInt::int128_t EncryptionAlgorithms::random128Value()
+{
+	boost::mt19937 rng;
+	boost::uniform_int<uint64_t> UInt64Range(1, std::numeric_limits<uint64_t>::max());
+	boost::variate_generator< boost::mt19937, boost::uniform_int<uint64_t>> generator(rng, UInt64Range);
+
+	boostInt::int128_t int64left = generator();
+	boostInt::int128_t int64right = generator();
+
+	boostInt::int128_t randomInt = int64left << 64 | int64right;
+
+	return randomInt;
+}
+
+bool EncryptionAlgorithms::isPrime128(boostInt::int128_t number)
+{
+	boostInt::int128_t i;
+	i.assign("18446744073709551617");
+	for (; i < number; i++)
+	{
+		if (number % i == 0)
+			return false;
+	}
+
+	return true;
+}
+
+boostInt::int128_t EncryptionAlgorithms::inverseModulo128(boostInt::int128_t a, boostInt::int128_t b)
+{
+	boostInt::int128_t b0 = b, t, q;
+	boostInt::int128_t x0 = 0, x1 = 1;
+
+	if (b == 1) return 1;
+	while (a > 1) {
+		q = a / b;
+		t = b, b = a % b, a = t;
+		t = x0, x0 = x1 - q * x0, x1 = t;
+	}
+	if (x1 < 0) x1 += b0;
+	return x1;
+}
+
 boostInt::int256_t EncryptionAlgorithms::powMod128(boostInt::int128_t value, boostInt::int128_t pow, boostInt::int128_t m)
 {
 	boostInt::int256_t pot, result, q;
@@ -57,6 +103,26 @@ boostInt::int256_t EncryptionAlgorithms::powMod128(boostInt::int128_t value, boo
 		if (q % 2) result = (result * pot) % m;
 		pot = (pot * pot) % m;
 	}
+
+	return result;
+}
+
+std::pair<boostInt::int128_t, boostInt::int128_t> EncryptionAlgorithms::Prime128Random()
+{
+	std::pair<boostInt::int128_t, boostInt::int128_t> result;
+
+	do
+	{
+		result.first = random128Value();
+		std::cout << result.first << std::endl;
+		if (!isPrime128(result.first))
+			result.first = 0;
+
+		result.second = random128Value();
+		if (!isPrime128(result.second))
+			result.second = 0;
+	} 
+	while (result.first == result.second || result.first == 0 || result.second == 0);
 
 	return result;
 }
@@ -75,6 +141,28 @@ RsaKeys EncryptionAlgorithms::generateKeys(int p, int q)
 		{
 			result.publicKey = i;
 			result.privateKey = inverseModulo(i, phi);
+			break;
+		}
+	}
+
+	return result;
+}
+
+RsaKeys128 EncryptionAlgorithms::generateKeys128(boostInt::int128_t p, boostInt::int128_t q)
+{
+	RsaKeys128 result;
+
+	boostInt::int128_t phi = (p - 1) * (q - 1);
+
+	result.modulKey = p * q;
+
+	for (int i{ 3 }; i < result.modulKey; i++)
+	{
+		if (boost::math::gcd(i, phi) == 1)
+		{
+			std::cout << "memmeme\n";
+			result.publicKey = i;
+			result.privateKey = inverseModulo128(i, phi);
 			break;
 		}
 	}
@@ -205,8 +293,13 @@ std::vector<short int> EncryptionAlgorithms::encryptRsa128(std::vector<short int
 
 	return result;
 }
-/*
+
 std::vector<short int> EncryptionAlgorithms::decryptRsa128(const std::vector<short int>& inputData, const boostInt::int128_t & e, const boostInt::int128_t & n)
 {
-	return std::vector<short int>();
-}*/
+	std::vector<short int> result;
+
+	for (int i{}; i < inputData.size(); i +=16)
+
+	return result;
+}
+

@@ -13,6 +13,13 @@ struct RsaKeys
 	int modulKey;
 };
 
+struct RsaKeys128
+{
+	boostInt::int128_t privateKey;
+	boostInt::int128_t publicKey;
+	boostInt::int128_t modulKey;
+};
+
 namespace EncryptionAlgorithms
 {
 
@@ -20,9 +27,16 @@ namespace EncryptionAlgorithms
 	int nwd(int, int);
 	int inverseModulo(int, int);
 	int powMod(int value, int pow, int m);
+	
+	boostInt::int128_t random128Value();
+	bool isPrime128(boostInt::int128_t);
+	boostInt::int128_t inverseModulo128(boostInt::int128_t, boostInt::int128_t);
 	boostInt::int256_t powMod128(boostInt::int128_t, boostInt::int128_t, boostInt::int128_t);
+	std::pair<boostInt::int128_t, boostInt::int128_t> Prime128Random();
+
 
 	RsaKeys generateKeys(int, int);
+	RsaKeys128 generateKeys128(boostInt::int128_t, boostInt::int128_t);
 
 	std::vector<short int> xor (const std::vector<short int>& inputVector, const std::vector<short int> keyVector);
 
@@ -33,6 +47,6 @@ namespace EncryptionAlgorithms
 	std::vector<short int> decryptRsa16(const std::vector<short int>& inputData, const short int & e, const short int & n);
 
 	std::vector<short int> encryptRsa128(std::vector<short int> inputData, boostInt::int128_t e, boostInt::int128_t n);
-	//std::vector<short int> decryptRsa128(const std::vector<short int>& inputData, const boostInt::int128_t & e, const boostInt::int128_t & n);
+	std::vector<short int> decryptRsa128(const std::vector<short int>& inputData, const boostInt::int128_t & e, const boostInt::int128_t & n);
 };
 

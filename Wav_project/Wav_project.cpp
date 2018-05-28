@@ -56,8 +56,42 @@ int main()
 	for (auto value : kek)
 		std::cout << value << "  ";*/
 
-	boostInt::int128_t dupa = 1213912;
-	boostInt::int256_t ss = dupa;
+	/*boostInt::int128_t dataBlock;
+	std::vector<short int> tmpVec = { 231,343,123,45,-22, 23,59, 94 }, result, ser = {2};
+
+	boostInt::import_bits(dataBlock, tmpVec.begin(), tmpVec.end(), 16);
+	boostInt::int256_t encryptedBlock = dataBlock;
+	//boostInt::import_bits(encryptedBlock, ser.begin(), ser.end(), 16);
+
+	boostInt::export_bits(encryptedBlock, std::back_inserter(result), 16);
+
+	for (auto value : result)
+		std::cout << value << "  ";
+	std::cout << std::endl;*/
+	
+
+
+	/*auto keys = EncryptionAlgorithms::generateKeys(67, 131);
+	std::cout << keys.modulKey << " " << keys.privateKey << " " << keys.publicKey << std::endl;
+
+	std::vector<short int> dupa = {1231,-231,-546,999,312,-9};
+
+	auto dec = EncryptionAlgorithms::encryptRsa8(dupa, 7, 8777);
+	auto res = EncryptionAlgorithms::decryptRsa8(dec, 4903, 8777);
+
+	for (auto i : res)
+		std::cout << i << " ";
+	std::cout << std::endl;*/
+
+	boostInt::int128_t ser, pep;
+	ser.assign("52751510013433959741152243176812731813");
+	pep.assign("68024952896801804974038439994705433499");
+
+	auto mem = EncryptionAlgorithms::generateKeys128(ser, pep);
+
+	std::cout << mem.privateKey << std::endl;
+	std::cout << mem.publicKey << std::endl;
+	std::cout << mem.modulKey << std::endl;
 
 	std::system("pause");
 	return 0;
