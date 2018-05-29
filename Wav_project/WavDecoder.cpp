@@ -50,7 +50,7 @@ void WavDecoder::readFile(std::string filename1)
 
 	this->samplesNumber = dataArgs.subchunk2Size * 8 / fileHeader.bitsPerSample;
 
-	if (fileHeader.numChannels == 1 || fileHeader.numChannels == 2) {
+	if (fileHeader.numChannels == 2 || fileHeader.numChannels == 1) {
 
 		this->audioData = new short int[samplesNumber];
 
@@ -80,10 +80,7 @@ void WavDecoder::writeToFile(std::string inputFilename)
 	std::fwrite((&fileHeader), sizeof(Wav_Header), 1, file);
 	std::fwrite((&dataArgs), sizeof(Wav_Data), 1, file);
 
-	for (int i{}; i < samplesNumber; i++)
-	{
-		std::fwrite((&audioData[i]), sizeof(audioData), 1, file);
-	}
+	std::fwrite(&audioData[0], sizeof(short int), samplesNumber, file);
 
 	fclose(file);
 }

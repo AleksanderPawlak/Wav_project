@@ -6,71 +6,22 @@
 #include <cstdlib>
 #include <cstdarg>
 #include <thread>
+#include <Windows.h>
 
 #include "DataAlgorithms.h"
 #include "WavDecoder.h"
 #include "EncryptionAlgorithms.h"
 #include "Menu.h"
+#include <fstream>
 
+#include <SFML\Audio.hpp>
 #include <bitset>
 
 int main()
 {
 
-	Menu m;
-	m.runMenu();
-	
-	/*ComplexVec d = {1,2,3,4, 5};
-
-
-	for (auto value : d)
-		std::cout << value << "  ";
-	std::cout << std::endl;
-	std::cout << std::endl;
-	std::cout << std::endl;
-
-	fft(d);
-	
-	for (auto value : d)
-		std::cout << value << "  ";
-	std::cout << std::endl;
-	std::cout << std::endl;
-	std::cout << std::endl;
-
-
-	reverseFft(d);
-
-	for (auto value : d)
-		std::cout << value << "  ";
-	std::cout << std::endl;*/
-
-	/*boostInt::int128_t dupa, ser;
-	std::vector<short int> dd = {12, 23, -44, 2132, 9323, 2313, 9393, 1231};
-	std::vector<short int> kek;
-
-	boostInt::import_bits(dupa, dd.begin(), dd.end(), 16);
-	boostInt::import_bits(ser, dd.begin(), dd.end(), 16);
-
-	boostInt::export_bits(dupa, std::back_inserter(kek), 16);
-	boostInt::export_bits(ser, std::back_inserter(kek), 16);
-
-	for (auto value : kek)
-		std::cout << value << "  ";*/
-
-	/*boostInt::int128_t dataBlock;
-	std::vector<short int> tmpVec = { 231,343,123,45,-22, 23,59, 94 }, result, ser = {2};
-
-	boostInt::import_bits(dataBlock, tmpVec.begin(), tmpVec.end(), 16);
-	boostInt::int256_t encryptedBlock = dataBlock;
-	//boostInt::import_bits(encryptedBlock, ser.begin(), ser.end(), 16);
-
-	boostInt::export_bits(encryptedBlock, std::back_inserter(result), 16);
-
-	for (auto value : result)
-		std::cout << value << "  ";
-	std::cout << std::endl;*/
-	
-
+	//Menu m;
+	//m.runMenu();
 
 	/*auto keys = EncryptionAlgorithms::generateKeys(67, 131);
 	std::cout << keys.modulKey << " " << keys.privateKey << " " << keys.publicKey << std::endl;
@@ -84,7 +35,7 @@ int main()
 		std::cout << i << " ";
 	std::cout << std::endl;*/
 	
-	boostInt::int256_t ser, pep, sen;
+	/*boostInt::int256_t ser, pep, sen;
 	ser.assign("52751510013433959741152243176812731813");
 	pep.assign("68024952896801804974038439994705433499");
 	sen.assign("123121442");
@@ -94,18 +45,39 @@ int main()
 	std::cout << mem.publicKey << std::endl;
 	std::cout << mem.modulKey << std::endl;*/
 	
-	std::vector<short int> dupa = {1243, -12223, 1, 1, 12221, 32318, -4321, 28218, -28218, 77, 1, 92, 340, 12, 44, -21, 40};
+	//std::vector<short int> dupa = { -41 ,-86 ,-86 ,-57, -57, -286 ,-286 ,-330 ,-330 ,-308 ,-308  ,69  ,69  ,484  ,484  ,305  ,305  ,121  ,121 , 575 };//{1243, -12223, 1, 1, 12221, 32318, -4321, 28218, -28218, 77, 1, 92, 340, 12, 44, -21, 40};
+
+
+
+	/*WavDecoder dd;
+	dd.readFile("samplemono.wav");
+	std::vector<short int> dupa;
+
+	for (int i{-500}; i < 5000; i++)
+	{
+		if (i > 28218)
+			dupa.push_back(i % 5000);
+		else
+			dupa.push_back(i);
+	}
 
 	auto enc = EncryptionAlgorithms::encryptRsa128(dupa, mem.publicKey, mem.modulKey);
 	std::cout << enc.size() << std::endl;
-	auto dec = EncryptionAlgorithms::decryptRsa128(enc, mem.privateKey, mem.modulKey);
+	auto dec = EncryptionAlgorithms::decryptRsa128(enc, mem.privateKey, mem.modulKey);*/
 
-	for (auto v : dec)
-		std::cout << v << "  ";
-	std::cout << std::endl;
+	/*for (auto v : enc)
+		std::cout << v << "  ";*/
+	/*int popo{999};
+	for (int i{ 0 }; i < 5000; i++)
+		if (dec[i] != dupa[i])
+		{
+			popo = -1010;
+			std::cout << "zepsulo sie na  " << i << std::endl;
+		}
 
-	std::system("pause");
+	std::cout << popo << std::endl;
 
+	std::system("pause");*/
 	return 0;
 }
 
