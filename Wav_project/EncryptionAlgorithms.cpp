@@ -233,7 +233,7 @@ std::vector<short int> EncryptionAlgorithms::decryptRsa128(std::vector<short int
 		for (int i{}; i < missingSpace; i++)
 			inputData.push_back(0);
 	}
-
+	std::cout << inputData.size() << std::endl;
 	for (int i{}; i < inputData.size(); i += 16)
 	{
 		std::vector<short int> tmpVec;

@@ -86,10 +86,16 @@ void Menu::displayFileFFT()
 	std::string response;
 	std::vector<double> doubleData;
 	auto data = decoder.getAudioData();
+	doubleData.reserve(data.size() / 2);
 
-	if (decoder.getChannelsNumber() == 1)
+	for (int i{}; i < data.size(); i += 2)
+		doubleData.push_back(data[i]);
+
+	/*if (decoder.getChannelsNumber() == 1)
 	{
-		doubleData = std::vector<double>(data.begin(), data.end());
+		for (int i{}; i < data.size(); i += 2)
+			doubleData.push_back(data[i]);
+		//doubleData = std::vector<double>(data.begin(), data.end());
 	}
 	else
 	{
@@ -98,9 +104,10 @@ void Menu::displayFileFFT()
 			char valueBits8[] = { static_cast<char>(value), static_cast<char>(value >> 8) };
 			doubleData.push_back(valueBits8[0]);
 		}
-	}
+	}*/
 
 	auto complexData = doubleToComplexVector(doubleData);
+	auto complexData2 = complexData;
 	fft(complexData);
 
 	std::thread display(DisplayComplexVector, complexData, "", -1);
@@ -109,7 +116,6 @@ void Menu::displayFileFFT()
 	for (int i{}; i < 10; i++)
 		std::cout << complexData[i] << "  ";
 	std::cout << std::endl;
-	std::system("pause");
 
 	if (display.joinable())
 	{
@@ -121,15 +127,15 @@ void Menu::displayFileFFT()
 
 	if (response == "Y" || response == "y")
 	{
-		reverseFft(complexData);
+		//reverseFft(complexData);
 
-		std::thread display(DisplayComplexVector, complexData, "", -1);
-		std::system("pause");
+		std::thread display(DisplayComplexVector, complexData2, "", -1);
 
 		if (display.joinable())
 		{
 			display.join();
 		}
+
 	}
 }
 
@@ -179,7 +185,7 @@ void Menu::encryptData()
 
 	while (running)
 	{
-		std::cout << "Prosze wybrac opcjê:\n";
+		std::cout << "Prosze wybrac opcje:\n";
 
 		for (int i{}; i < options.size(); i++)
 		{
@@ -236,7 +242,7 @@ void Menu::runMenu()
 
 	while (running)
 	{
-		std::cout << "Prosze wybrac opcjê:\n";
+		std::cout << "Prosze wybrac opcje:\n";
 
 		for (int i{}; i < options.size(); i++)
 		{
@@ -375,7 +381,6 @@ void DecoderMenu::doRSA128(WavDecoder & decoder)
 	} while (e == 0);
 
 	auto enc = EncryptionAlgorithms::encryptRsa128(data, e, n);
-	std::cout << "saldpa\n";
 	this->handleEncryptionResult(decoder, enc);
 }
 
