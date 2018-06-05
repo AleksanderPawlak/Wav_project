@@ -127,7 +127,7 @@ void Menu::displayFileFFT()
 
 	if (response == "Y" || response == "y")
 	{
-		//reverseFft(complexData);
+		reverseFft(complexData);
 
 		std::thread display(DisplayComplexVector, complexData2, "", -1);
 
